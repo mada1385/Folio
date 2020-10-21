@@ -6,13 +6,12 @@ import 'package:firebase_dynamic_links/firebase_dynamic_links.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:folio/components/foliocard.dart';
+import 'package:folio/components/profilecard.dart';
 import 'package:folio/components/title.dart';
 import 'package:folio/constants/colors.dart';
 import 'package:folio/logic/provider.dart';
-import 'package:folio/profilecard.dart';
 import 'package:folio/screens/addportfolio.dart';
 import 'package:folio/screens/login.dart';
-import 'package:folio/screens/nointernetscreen.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 import 'package:share/share.dart';
@@ -70,15 +69,17 @@ class _DetailsPageState extends State<DetailsPage> {
   }
 
   Future<void> getid() async {
-    var messges = await _store
-        .collection("user")
-        .where('email', isEqualTo: widget.useremail)
-        .getDocuments();
-    for (var massege in messges.documents) {
-      setState(() {
-        id = massege.documentID;
-      });
-    }
+    try {
+      var messges = await _store
+          .collection("user")
+          .where('email', isEqualTo: widget.useremail)
+          .getDocuments();
+      for (var massege in messges.documents) {
+        setState(() {
+          id = massege.documentID;
+        });
+      }
+    } catch (e) {}
   }
 
   Future getImage() async {
@@ -224,207 +225,202 @@ class _DetailsPageState extends State<DetailsPage> {
               )
             ],
           ),
-          body: ConnectivityWidgetWrapper(
-            // disableInteraction: true,
-            // offlineWidget: Nointernetscreen(),
-            child: ListView(children: [
-              Stack(children: [
-                Container(
-                    height: MediaQuery.of(context).size.height - 82.0,
-                    width: MediaQuery.of(context).size.width,
-                    color: Colors.transparent),
-                Positioned(
-                    top: 75.0,
-                    child: Container(
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.only(
-                              topLeft: Radius.circular(45.0),
-                              topRight: Radius.circular(45.0),
-                            ),
-                            color: Colors.white),
-                        height: MediaQuery.of(context).size.height - 100.0,
-                        width: MediaQuery.of(context).size.width)),
-                Positioned(
-                  top: 30.0,
-                  left: (MediaQuery.of(context).size.width / 2) - 100.0,
-                  child:
-                      // CircleAvatar(
-                      //   backgroundColor: Colors.amber,
-                      //   radius: 70,
-                      // ),
-                      Row(
-                    children: <Widget>[
-                      CircleAvatar(
-                          backgroundColor: k_backgroundcolor,
-                          maxRadius: 100,
-                          backgroundImage: _image != null
-                              ? FileImage(_image)
-                              : photourl != null
-                                  ? NetworkImage(photourl)
-                                  : AssetImage(
-                                      "asset/nopic.jpg",
-                                    )),
-                      Column(
-                        children: <Widget>[
-                          Padding(
-                            padding: EdgeInsets.only(top: 60.0),
-                            child: IconButton(
-                              icon: Icon(
-                                Icons.camera,
-                                size: 30.0,
-                                color: k_backgroundcolor,
-                              ),
-                              onPressed: () async {
-                                await getImage();
-                              },
-                            ),
+          body: ListView(children: [
+            Stack(children: [
+              Container(
+                  height: MediaQuery.of(context).size.height - 82.0,
+                  width: MediaQuery.of(context).size.width,
+                  color: Colors.transparent),
+              Positioned(
+                  top: 75.0,
+                  child: Container(
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.only(
+                            topLeft: Radius.circular(45.0),
+                            topRight: Radius.circular(45.0),
                           ),
-                        ],
-                      ),
-                    ],
-                  ),
+                          color: Colors.white),
+                      height: MediaQuery.of(context).size.height - 100.0,
+                      width: MediaQuery.of(context).size.width)),
+              Positioned(
+                top: 30.0,
+                left: (MediaQuery.of(context).size.width / 2) - 100.0,
+                child:
+                    // CircleAvatar(
+                    //   backgroundColor: Colors.amber,
+                    //   radius: 70,
+                    // ),
+                    Row(
+                  children: <Widget>[
+                    CircleAvatar(
+                        backgroundColor: k_backgroundcolor,
+                        maxRadius: 100,
+                        backgroundImage: _image != null
+                            ? FileImage(_image)
+                            : photourl != null
+                                ? NetworkImage(photourl)
+                                : AssetImage(
+                                    "asset/nopic.jpg",
+                                  )),
+                    Column(
+                      children: <Widget>[
+                        Padding(
+                          padding: EdgeInsets.only(top: 60.0),
+                          child: IconButton(
+                            icon: Icon(
+                              Icons.camera,
+                              size: 30.0,
+                              color: k_backgroundcolor,
+                            ),
+                            onPressed: () async {
+                              await getImage();
+                            },
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
                 ),
-                Positioned(
-                  top: 250.0,
-                  left: 25.0,
-                  right: 25.0,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    crossAxisAlignment: CrossAxisAlignment.stretch,
-                    children: <Widget>[
-                      Updatedinfocard(
-                        data: name,
-                        hint: "update name",
-                        collection: "user",
-                        label: "full_name",
-                        id: id,
-                      ),
-                      Updatedinfocard(
-                        data: job,
-                        hint: "update name",
-                        collection: "user",
-                        label: "jobtitle",
-                        id: id,
-                      ),
-                      // Container(
-                      //   decoration: BoxDecoration(
-                      //     // color: k_backgroundcolor,
-                      //     borderRadius: BorderRadius.all(Radius.circular(20)),
-                      //     border: Border.all(color: k_backgroundcolor),
-                      //   ),
-                      //   child: Center(
-                      //     child: Padding(
-                      //       padding: EdgeInsets.symmetric(
-                      //           horizontal: 100, vertical: 15),
-                      //       child: Text(name),
-                      //     ),
-                      //   ),
-                      // ),
-                      // SizedBox(
-                      //   height: 10,
-                      // ),
-                      // Container(
-                      //   decoration: BoxDecoration(
-                      //     // color: k_backgroundcolor,
-                      //     borderRadius: BorderRadius.all(Radius.circular(20)),
-                      //     border: Border.all(color: k_backgroundcolor),
-                      //   ),
-                      //   child: Center(
-                      //     child: Padding(
-                      //       padding: EdgeInsets.symmetric(
-                      //           horizontal: 100, vertical: 15),
-                      //       child: Text(job),
-                      //     ),
-                      //   ),
-                      // ),
-                      StreamBuilder<QuerySnapshot>(
-                        stream: Firestore.instance
-                            .collection("images")
-                            .where('email', isEqualTo: widget.useremail)
-                            .snapshots(),
-                        builder: (context, snapshot) {
-                          if (!snapshot.hasData) {
-                            return Center(
-                              child: CircularProgressIndicator(
-                                  backgroundColor: k_backgroundcolor),
-                            );
-                          } else {
-                            final portfolios = snapshot.data.documents;
-                            List<Widget> chatlist = [];
+              ),
+              Positioned(
+                top: 250.0,
+                left: 25.0,
+                right: 25.0,
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: <Widget>[
+                    Updatedinfocard(
+                      data: name,
+                      hint: "update name",
+                      collection: "user",
+                      label: "full_name",
+                      id: id,
+                    ),
+                    Updatedinfocard(
+                      data: job,
+                      hint: "update name",
+                      collection: "user",
+                      label: "jobtitle",
+                      id: id,
+                    ),
+                    // Container(
+                    //   decoration: BoxDecoration(
+                    //     // color: k_backgroundcolor,
+                    //     borderRadius: BorderRadius.all(Radius.circular(20)),
+                    //     border: Border.all(color: k_backgroundcolor),
+                    //   ),
+                    //   child: Center(
+                    //     child: Padding(
+                    //       padding: EdgeInsets.symmetric(
+                    //           horizontal: 100, vertical: 15),
+                    //       child: Text(name),
+                    //     ),
+                    //   ),
+                    // ),
+                    // SizedBox(
+                    //   height: 10,
+                    // ),
+                    // Container(
+                    //   decoration: BoxDecoration(
+                    //     // color: k_backgroundcolor,
+                    //     borderRadius: BorderRadius.all(Radius.circular(20)),
+                    //     border: Border.all(color: k_backgroundcolor),
+                    //   ),
+                    //   child: Center(
+                    //     child: Padding(
+                    //       padding: EdgeInsets.symmetric(
+                    //           horizontal: 100, vertical: 15),
+                    //       child: Text(job),
+                    //     ),
+                    //   ),
+                    // ),
+                    StreamBuilder<QuerySnapshot>(
+                      stream: Firestore.instance
+                          .collection("images")
+                          .where('email', isEqualTo: widget.useremail)
+                          .snapshots(),
+                      builder: (context, snapshot) {
+                        if (!snapshot.hasData) {
+                          return Center(
+                            child: CircularProgressIndicator(
+                                backgroundColor: k_backgroundcolor),
+                          );
+                        } else {
+                          final portfolios = snapshot.data.documents;
+                          List<Widget> chatlist = [];
 
-                            for (int i = 0; i < 1; i++) {
-                              for (var portfolio in portfolios) {
-                                final tittle = portfolio.data["full_name"];
-                                final description =
-                                    portfolio.data["description"];
-                                final date = portfolio.data["date"];
-                                final technologies =
-                                    portfolio.data["technologies"];
-                                final email = portfolio.data["email"];
-                                final url = portfolio.data["urls"];
-                                final id = portfolio.documentID;
+                          for (int i = 0; i < 1; i++) {
+                            for (var portfolio in portfolios) {
+                              final tittle = portfolio.data["full_name"];
+                              final description = portfolio.data["description"];
+                              final date = portfolio.data["date"];
+                              final technologies =
+                                  portfolio.data["technologies"];
+                              final email = portfolio.data["email"];
+                              final url = portfolio.data["urls"];
+                              final id = portfolio.documentID;
 
-                                // final alignment = messagesender == loggedInUser.email ?  TextAlign.end :  TextAlign.start  ;
-                                final portfoliocard = Foliocard(
-                                  url: url,
-                                  tittle: tittle,
-                                  date: date,
-                                  description: description,
-                                  technology: technologies,
-                                  id: id,
-                                );
-
-                                chatlist.add(portfoliocard);
-                              }
-                              final addnew = Padding(
-                                padding: EdgeInsets.symmetric(
-                                  horizontal: 20,
-                                ),
-                                child: Container(
-                                  // color: k_backgroundcolor,
-                                  // elevation: 20,
-                                  child: Padding(
-                                    padding: EdgeInsets.symmetric(
-                                      horizontal: 50,
-                                    ),
-                                    child: IconButton(
-                                        icon: Icon(
-                                          Icons.add,
-                                          color: k_backgroundcolor,
-                                          size: 70,
-                                        ),
-                                        onPressed: () {
-                                          Navigator.push(
-                                              context,
-                                              MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      Addportoflioscreen()));
-                                        }),
-                                  ),
-                                ),
+                              // final alignment = messagesender == loggedInUser.email ?  TextAlign.end :  TextAlign.start  ;
+                              final portfoliocard = Foliocard(
+                                url: url,
+                                tittle: tittle,
+                                date: date,
+                                description: description,
+                                technology: technologies,
+                                id: id,
                               );
-                              chatlist.add(addnew);
-                            }
 
-                            return Container(
-                              // width: 100,
-                              height: 350,
-                              child: ListView(
-                                shrinkWrap: true,
-                                scrollDirection: Axis.horizontal,
-                                // reverse: true,
-                                children: chatlist,
+                              chatlist.add(portfoliocard);
+                            }
+                            final addnew = Padding(
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 20,
+                              ),
+                              child: Container(
+                                // color: k_backgroundcolor,
+                                // elevation: 20,
+                                child: Padding(
+                                  padding: EdgeInsets.symmetric(
+                                    horizontal: 50,
+                                  ),
+                                  child: IconButton(
+                                      icon: Icon(
+                                        Icons.add,
+                                        color: k_backgroundcolor,
+                                        size: 70,
+                                      ),
+                                      onPressed: () {
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    Addportoflioscreen()));
+                                      }),
+                                ),
                               ),
                             );
+                            chatlist.add(addnew);
                           }
-                        },
-                      ),
-                    ],
-                  ),
-                )
-              ]),
+
+                          return Container(
+                            // width: 100,
+                            height: 350,
+                            child: ListView(
+                              shrinkWrap: true,
+                              scrollDirection: Axis.horizontal,
+                              // reverse: true,
+                              children: chatlist,
+                            ),
+                          );
+                        }
+                      },
+                    ),
+                  ],
+                ),
+              )
             ]),
-          )),
+          ])),
     );
   }
 

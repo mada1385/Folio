@@ -21,43 +21,47 @@ class Updatedinfocard extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
       child: Container(
-        child: Card(
-          elevation: 20,
-          child: Container(
-            width: double.infinity,
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20),
-                  child: Text(
-                    data,
-                  ),
-                ),
-                SizedBox(
-                  width: 25,
-                ),
-                IconButton(
-                    icon: Icon(
-                      Icons.edit,
-                      color: k_backgroundcolor,
+        child: Row(
+          children: [
+            Card(
+              elevation: 20,
+              child: Container(
+                width: double.infinity,
+                child: Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 20, vertical: 5),
+                      child: Center(
+                        child: Text(
+                          data,
+                          textAlign: TextAlign.center,
+                        ),
+                      ),
                     ),
-                    onPressed: () {
-                      if (!id.isEmpty) {
-                        Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => Updatescreen(
-                                      hint: hint,
-                                      id: id,
-                                      label: label,
-                                      collection: collection,
-                                    )));
-                      }
-                    })
-              ],
+                  ],
+                ),
+              ),
             ),
-          ),
+            IconButton(
+                icon: Icon(
+                  Icons.edit,
+                  color: k_backgroundcolor,
+                ),
+                onPressed: () {
+                  if (!id.isEmpty) {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => Updatescreen(
+                                  hint: hint,
+                                  id: id,
+                                  label: label,
+                                  collection: collection,
+                                )));
+                  }
+                })
+          ],
         ),
       ),
     );

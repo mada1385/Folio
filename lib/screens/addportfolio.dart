@@ -9,6 +9,8 @@ import 'package:folio/logic/utils.dart';
 import 'package:folio/screens/portfoliossceen.dart';
 import 'package:multi_image_picker/multi_image_picker.dart';
 import 'package:provider/provider.dart';
+import 'package:connectivity_wrapper/connectivity_wrapper.dart';
+import 'package:folio/screens/nointernetscreen.dart';
 
 class Addportoflioscreen extends StatefulWidget {
   final GlobalKey<ScaffoldState> globalKey;
@@ -109,161 +111,170 @@ class _AddportoflioscreenState extends State<Addportoflioscreen> {
   @override
   Widget build(BuildContext context) {
     String email = Provider.of<Userprovider>(context).email;
-    return Container(
-      decoration: BoxDecoration(gradient: k_gradientfolio),
+    return ConnectivityWidgetWrapper(
+      // disableInteraction: true,
+      offlineWidget: Nointernetscreen(),
       child: Container(
-        child: Scaffold(
-          appBar: AppBar(
+        decoration: BoxDecoration(gradient: k_gradientfolio),
+        child: Container(
+          child: Scaffold(
+            appBar: AppBar(
+              backgroundColor: Colors.transparent,
+              elevation: 0.0,
+              title: Tiltle(),
+              centerTitle: true,
+            ),
             backgroundColor: Colors.transparent,
-            elevation: 0.0,
-            title: Tiltle(),
-            centerTitle: true,
-          ),
-          backgroundColor: Colors.transparent,
-          body: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
-            child: Container(
-              decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.all(Radius.circular(20))),
-              width: double.infinity,
-              height: double.infinity,
-              child: SafeArea(
-                child: Column(
-                  children: <Widget>[
-                    SizedBox(
-                      height: 10,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 10),
-                      child: Card(
-                        elevation: 30,
+            body: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 5),
+              child: Container(
+                decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.all(Radius.circular(20))),
+                width: double.infinity,
+                height: double.infinity,
+                child: SafeArea(
+                  child: Column(
+                    children: <Widget>[
+                      SizedBox(
+                        height: 10,
+                      ),
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 10),
+                        child: Card(
+                          elevation: 30,
+                          child: Container(
+                            width: double.infinity,
+                            height: 300,
+                            child: buildGridView(),
+                          ),
+                        ),
+                      ),
+                      Roundbutton(
+                        label: 'add photo',
+                        func: loadAssets,
+                      ),
+                      Expanded(
                         child: Container(
-                          width: double.infinity,
-                          height: 300,
-                          child: buildGridView(),
-                        ),
-                      ),
-                    ),
-                    Roundbutton(
-                      label: 'add photo',
-                      func: loadAssets,
-                    ),
-                    Expanded(
-                      child: Container(
-                        // height: 410,
-                        child: ListView(
-                          children: <Widget>[
-                            SizedBox(
-                              height: 20,
-                            ),
-                            Maintextfield(
-                              controller: projecttittle,
-                              validate: vprojecttittle,
-                              hint: "project tittle",
-                              error: eprojecttittle,
-                            ),
-                            SizedBox(
-                              height: 20,
-                            ),
-                            Maintextfield(
-                              controller: date,
-                              validate: vdate,
-                              hint: "project date",
-                              error: edate,
-                            ),
-                            SizedBox(
-                              height: 20,
-                            ),
-                            Maintextfield(
-                              controller: description,
-                              validate: vdescription,
-                              hint: "project description",
-                              error: edescription,
-                            ),
-                            SizedBox(
-                              height: 20,
-                            ),
-                            Maintextfield(
-                              controller: technology,
-                              validate: vtechnology,
-                              hint: "project technology",
-                              error: etechnology,
-                            ),
-                            SizedBox(
-                              height: 20,
-                            ),
-                            Roundbutton(
-                              label: 'add',
-                              func: () async {
-                                setState(() {
-                                  projecttittle.text.isEmpty
-                                      ? vprojecttittle = true
-                                      : vprojecttittle = false;
-
-                                  date.text.isEmpty
-                                      ? vdate = true
-                                      : vdate = false;
-
-                                  description.text.isEmpty
-                                      ? vdescription = true
-                                      : vdescription = false;
-
-                                  technology.text.isEmpty
-                                      ? vtechnology = true
-                                      : vtechnology = false;
-                                });
-                                if (!projecttittle.text.isEmpty &&
-                                    !date.text.isEmpty &&
-                                    !description.text.isEmpty &&
-                                    !technology.text.isEmpty) {
-                                  final connection =
-                                      await Provider.of<Userprovider>(context,
-                                              listen: false)
-                                          .connection();
-
-                                  if (connection) {
-                                    Portfolio x = Portfolio(
-                                        tittle: projecttittle.text,
-                                        description: description.text,
-                                        technologies: technology.text,
-                                        date: date.text,
-                                        email: email,
-                                        images: images);
-                                    bool y = x.uploadportfolio();
-
-                                    print(y);
-
-                                    if (y) {
-                                      SnackBar snackbar = SnackBar(
-                                          content:
-                                              Text('Uploaded Successfully'));
-                                      widget.globalKey.currentState
-                                          .showSnackBar(snackbar);
-                                    }
+                          // height: 410,
+                          child: Theme(
+                            data: ThemeData(accentColor: k_backgroundcolor),
+                            child: ListView(
+                              children: <Widget>[
+                                SizedBox(
+                                  height: 20,
+                                ),
+                                Maintextfield(
+                                  controller: projecttittle,
+                                  validate: vprojecttittle,
+                                  hint: "project tittle",
+                                  error: eprojecttittle,
+                                ),
+                                SizedBox(
+                                  height: 20,
+                                ),
+                                Maintextfield(
+                                  controller: date,
+                                  validate: vdate,
+                                  hint: "project date",
+                                  error: edate,
+                                ),
+                                SizedBox(
+                                  height: 20,
+                                ),
+                                Maintextfield(
+                                  controller: description,
+                                  validate: vdescription,
+                                  hint: "project description",
+                                  error: edescription,
+                                ),
+                                SizedBox(
+                                  height: 20,
+                                ),
+                                Maintextfield(
+                                  controller: technology,
+                                  validate: vtechnology,
+                                  hint: "project technology",
+                                  error: etechnology,
+                                ),
+                                SizedBox(
+                                  height: 20,
+                                ),
+                                Roundbutton(
+                                  label: 'add',
+                                  func: () async {
                                     setState(() {
-                                      images = [];
-                                      // imageUrls = [];
+                                      projecttittle.text.isEmpty
+                                          ? vprojecttittle = true
+                                          : vprojecttittle = false;
+
+                                      date.text.isEmpty
+                                          ? vdate = true
+                                          : vdate = false;
+
+                                      description.text.isEmpty
+                                          ? vdescription = true
+                                          : vdescription = false;
+
+                                      technology.text.isEmpty
+                                          ? vtechnology = true
+                                          : vtechnology = false;
                                     });
-                                    Navigator.pushReplacement(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) => DetailsPage(
-                                                  useremail: email,
-                                                )));
-                                  } else {
-                                    Provider.of<Userprovider>(context,
-                                            listen: false)
-                                        .noconnection(context);
-                                  }
-                                }
-                              },
-                            )
-                          ],
+                                    if (!projecttittle.text.isEmpty &&
+                                        !date.text.isEmpty &&
+                                        !description.text.isEmpty &&
+                                        !technology.text.isEmpty) {
+                                      final connection =
+                                          await Provider.of<Userprovider>(
+                                                  context,
+                                                  listen: false)
+                                              .connection();
+
+                                      if (connection) {
+                                        Portfolio x = Portfolio(
+                                            tittle: projecttittle.text,
+                                            description: description.text,
+                                            technologies: technology.text,
+                                            date: date.text,
+                                            email: email,
+                                            images: images);
+                                        bool y = x.uploadportfolio();
+
+                                        print(y);
+
+                                        if (y) {
+                                          SnackBar snackbar = SnackBar(
+                                              content: Text(
+                                                  'Uploaded Successfully'));
+                                          widget.globalKey.currentState
+                                              .showSnackBar(snackbar);
+                                        }
+                                        setState(() {
+                                          images = [];
+                                          // imageUrls = [];
+                                        });
+                                        Navigator.pushReplacement(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) =>
+                                                    DetailsPage(
+                                                      useremail: email,
+                                                    )));
+                                      } else {
+                                        Provider.of<Userprovider>(context,
+                                                listen: false)
+                                            .noconnection(context);
+                                      }
+                                    }
+                                  },
+                                )
+                              ],
+                            ),
+                          ),
                         ),
-                      ),
-                    )
-                  ],
+                      )
+                    ],
+                  ),
                 ),
               ),
             ),
